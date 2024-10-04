@@ -25,7 +25,7 @@ public class DownloadRepository implements Repository<Download> {
             CREATE TABLE IF NOT EXISTS downloads (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 url VARCHAR(2048) NOT NULL,
-                size DOUBLE,
+                size BIGINT,
                 status VARCHAR(20),
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
@@ -164,7 +164,7 @@ public class DownloadRepository implements Repository<Download> {
     private Download createDownloadFromResultSet(ResultSet rs) throws SQLException {
         long id = rs.getLong("id");
         String url = rs.getString("url");
-        double size = rs.getDouble("size");
+        long size = rs.getLong("size");
 
         Timestamp startTime = rs.getTimestamp("start_time");
         Timestamp endTime = rs.getTimestamp("end_time");

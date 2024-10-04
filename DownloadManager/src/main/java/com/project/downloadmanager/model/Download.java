@@ -12,8 +12,8 @@ public class Download {
     private long id;
     private String url;
 
-    private double size;
-    private double downloaded;
+    private long size;
+    private long downloaded;
 
     private DownloadStatus status;
 
@@ -21,7 +21,7 @@ public class Download {
     private Date endTime;
     private long elapsedTime;
     private long remainingTime;
-    private double speed;
+    private int speed;
     private User userId;
 
 
@@ -31,7 +31,7 @@ public class Download {
         this.userId = user;
     }
 
-    public Download(long id, String url, User user, double size ,
+    public Download(long id, String url, User user, long size ,
                     Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
@@ -75,19 +75,19 @@ public class Download {
         this.url = url;
     }
 
-    public double getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
-    public double getDownloaded() {
+    public long getDownloaded() {
         return downloaded;
     }
 
-    public void setDownloaded(double downloaded) {
+    public void setDownloaded(long downloaded) {
         this.downloaded = downloaded;
     }
 
@@ -124,11 +124,11 @@ public class Download {
         this.remainingTime = remainingTime;
     }
 
-    public double getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 

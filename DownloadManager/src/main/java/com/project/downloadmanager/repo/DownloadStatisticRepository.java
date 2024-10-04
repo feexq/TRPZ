@@ -24,7 +24,7 @@ public class DownloadStatisticRepository implements Repository<DownloadStatistic
                     id INT PRIMARY KEY AUTO_INCREMENT,
                     user_id INT UNIQUE, 
                     downloads INT NOT NULL,
-                    downloads_size DOUBLE NOT NULL,
+                    downloads_size BIGINT NOT NULL,
                     download_total_hours BIGINT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
