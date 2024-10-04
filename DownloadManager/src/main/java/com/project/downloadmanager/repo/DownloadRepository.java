@@ -1,7 +1,9 @@
 package com.project.downloadmanager.repo;
 
 import com.project.downloadmanager.model.Download;
-import com.project.downloadmanager.model.DownloadStatus;
+import com.project.downloadmanager.model.User;
+import com.project.downloadmanager.model.enums.DownloadStatus;
+import com.project.downloadmanager.repo.interfaces.Repository;
 import com.project.downloadmanager.util.DatabaseConnection;
 
 import java.sql.*;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DownloadRepository implements Repository<Download>{
+public class DownloadRepository implements Repository<Download> {
 
     public DownloadRepository() {
         initializeDatabase();
@@ -21,13 +23,13 @@ public class DownloadRepository implements Repository<Download>{
 
             String sql = """
             CREATE TABLE IF NOT EXISTS downloads (
-                id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                id INT PRIMARY KEY AUTO_INCREMENT,
                 url VARCHAR(2048) NOT NULL,
-                size BIGINT,
+                size DOUBLE,
                 status VARCHAR(20),
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
-                user_id BIGINT,
+                user_id INT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id)
@@ -56,7 +58,7 @@ public class DownloadRepository implements Repository<Download>{
             if (download.getId() == 0) {
                 try (PreparedStatement pstmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
                     setStatementParameters(pstmt, download);
-                    pstmt.setLong(6, download.getUserId());
+                    pstmt.setLong(6, 1);
 
                     pstmt.executeUpdate();
 
@@ -69,7 +71,7 @@ public class DownloadRepository implements Repository<Download>{
             } else {
                 try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
                     setStatementParameters(pstmt, download);
-                    pstmt.setLong(6, download.getUserId());
+                    pstmt.setLong(6, 1);
                     pstmt.setLong(7, download.getId());
 
                     pstmt.executeUpdate();
@@ -81,7 +83,7 @@ public class DownloadRepository implements Repository<Download>{
     }
     private void setStatementParameters(PreparedStatement pstmt, Download download) throws SQLException {
         pstmt.setString(1, download.getUrl());
-        pstmt.setLong(2, download.getSize());
+        pstmt.setDouble(2, download.getSize());
         pstmt.setString(3, download.getStatus() != null ? download.getStatus().name() : null);
         pstmt.setTimestamp(4, download.getStartTime() != null ? new Timestamp(download.getStartTime().getTime()) : null);
         pstmt.setTimestamp(5, download.getEndTime() != null ? new Timestamp(download.getEndTime().getTime()) : null);
@@ -162,7 +164,7 @@ public class DownloadRepository implements Repository<Download>{
     private Download createDownloadFromResultSet(ResultSet rs) throws SQLException {
         long id = rs.getLong("id");
         String url = rs.getString("url");
-        long size = rs.getLong("size");
+        double size = rs.getDouble("size");
 
         Timestamp startTime = rs.getTimestamp("start_time");
         Timestamp endTime = rs.getTimestamp("end_time");
@@ -172,6 +174,6 @@ public class DownloadRepository implements Repository<Download>{
 
         long userId = rs.getLong("user_id");
 
-        return new Download(id, url, userId, size, startTime, status, endTime);
+        return new Download(id, url, new User(), size, startTime, status, endTime);
     }
 }

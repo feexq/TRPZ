@@ -3,15 +3,15 @@ package com.project.downloadmanager.model;
 public class DownloadStatistic {
     private long id;
     private int downloads;
-    private long downloadsSize;
+    private double downloadsSize;
 //    private float avgSpeed; // maybe!?
     private long downloadTotalTime;
 
-    private long userId;
+    private User userId;
 
     //............... maybe something else!!?
 
-    public DownloadStatistic(long id,int downloads, long downloadBytes, float avgSpeed, long downloadTotalTime) {
+    public DownloadStatistic(long id,int downloads, double downloadBytes, float avgSpeed, long downloadTotalTime) {
         this.id = id;
         this.downloads = downloads;
         this.downloadsSize = downloadBytes;
@@ -23,11 +23,11 @@ public class DownloadStatistic {
 
     }
 
-    public long getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 
@@ -39,11 +39,11 @@ public class DownloadStatistic {
         this.downloads = downloads;
     }
 
-    public long getDownloadsSize() {
+    public double getDownloadsSize() {
         return downloadsSize;
     }
 
-    public void setDownloadsSize(long downloadsSize) {
+    public void setDownloadsSize(double downloadsSize) {
         this.downloadsSize = downloadsSize;
     }
 

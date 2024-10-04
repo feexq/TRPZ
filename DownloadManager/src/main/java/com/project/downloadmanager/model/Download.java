@@ -1,5 +1,8 @@
 package com.project.downloadmanager.model;
 
+import com.project.downloadmanager.model.User;
+import com.project.downloadmanager.model.enums.DownloadStatus;
+
 import java.util.Date;
 
 public class Download {
@@ -9,8 +12,8 @@ public class Download {
     private long id;
     private String url;
 
-    private long size;
-    private long downloaded;
+    private double size;
+    private double downloaded;
 
     private DownloadStatus status;
 
@@ -18,17 +21,17 @@ public class Download {
     private Date endTime;
     private long elapsedTime;
     private long remainingTime;
-    private float speed;
-    private long userId;
+    private double speed;
+    private User userId;
 
 
-    public Download(long id, String url, long user) {
+    public Download(long id, String url, User user) {
         this.id = id;
         this.url = url;
         this.userId = user;
     }
 
-    public Download(long id, String url, long user, long size ,
+    public Download(long id, String url, User user, double size ,
                     Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
@@ -72,19 +75,19 @@ public class Download {
         this.url = url;
     }
 
-    public long getSize() {
+    public double getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(double size) {
         this.size = size;
     }
 
-    public long getDownloaded() {
+    public double getDownloaded() {
         return downloaded;
     }
 
-    public void setDownloaded(long downloaded) {
+    public void setDownloaded(double downloaded) {
         this.downloaded = downloaded;
     }
 
@@ -121,11 +124,11 @@ public class Download {
         this.remainingTime = remainingTime;
     }
 
-    public float getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(double speed) {
         this.speed = speed;
     }
 
@@ -141,11 +144,11 @@ public class Download {
         this.endTime = date;
     }
 
-    public long getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(long user) {
+    public void setUserId(User user) {
         this.userId = user;
     }
 }
