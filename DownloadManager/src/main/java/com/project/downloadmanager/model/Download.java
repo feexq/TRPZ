@@ -1,5 +1,8 @@
 package com.project.downloadmanager.model;
 
+import com.project.downloadmanager.model.User;
+import com.project.downloadmanager.model.enums.DownloadStatus;
+
 import java.util.Date;
 
 public class Download {
@@ -18,17 +21,17 @@ public class Download {
     private Date endTime;
     private long elapsedTime;
     private long remainingTime;
-    private float speed;
-    private long userId;
+    private int speed;
+    private User userId;
 
 
-    public Download(long id, String url, long user) {
+    public Download(long id, String url, User user) {
         this.id = id;
         this.url = url;
         this.userId = user;
     }
 
-    public Download(long id, String url, long user, long size ,
+    public Download(long id, String url, User user, long size ,
                     Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
@@ -121,11 +124,11 @@ public class Download {
         this.remainingTime = remainingTime;
     }
 
-    public float getSpeed() {
+    public int getSpeed() {
         return speed;
     }
 
-    public void setSpeed(float speed) {
+    public void setSpeed(int speed) {
         this.speed = speed;
     }
 
@@ -141,11 +144,11 @@ public class Download {
         this.endTime = date;
     }
 
-    public long getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(long user) {
+    public void setUserId(User user) {
         this.userId = user;
     }
 }

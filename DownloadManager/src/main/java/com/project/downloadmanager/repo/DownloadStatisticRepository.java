@@ -1,6 +1,7 @@
 package com.project.downloadmanager.repo;
 
 import com.project.downloadmanager.model.DownloadStatistic;
+import com.project.downloadmanager.repo.interfaces.Repository;
 import com.project.downloadmanager.util.DatabaseConnection;
 
 import java.sql.*;
@@ -20,11 +21,11 @@ public class DownloadStatisticRepository implements Repository<DownloadStatistic
 
             String sql = """
                 CREATE TABLE IF NOT EXISTS download_statistics (
-                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                    user_id BIGINT UNIQUE, 
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    user_id INT UNIQUE, 
                     downloads INT NOT NULL,
                     downloads_size BIGINT NOT NULL,
-                    download_total_time BIGINT NOT NULL,
+                    download_total_hours BIGINT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     FOREIGN KEY (user_id) REFERENCES users(id) 
@@ -88,7 +89,7 @@ public class DownloadStatisticRepository implements Repository<DownloadStatistic
         try (Connection conn = DatabaseConnection.getConnection()) {
             if (statistic.getId() == 0) {
                 try (PreparedStatement pstmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-                    pstmt.setLong(1, statistic.getUserId());
+                    pstmt.setLong(1, 1);
                     setStatementParameters(pstmt, statistic);
 
                     pstmt.executeUpdate();
@@ -101,7 +102,7 @@ public class DownloadStatisticRepository implements Repository<DownloadStatistic
                 }
             } else {
                 try (PreparedStatement pstmt = conn.prepareStatement(updateSql)) {
-                    pstmt.setLong(1, statistic.getUserId());
+                    pstmt.setLong(1, 1);
                     setStatementParameters(pstmt, statistic);
 
                     pstmt.executeUpdate();
@@ -114,7 +115,7 @@ public class DownloadStatisticRepository implements Repository<DownloadStatistic
 
     private void setStatementParameters(PreparedStatement pstmt, DownloadStatistic statistic) throws SQLException {
         pstmt.setInt(2, statistic.getDownloads());
-        pstmt.setLong(3, statistic.getDownloadsSize());
+        pstmt.setDouble(3, statistic.getDownloadsSize());
         pstmt.setLong(4, statistic.getDownloadTotalTime());
     }
 

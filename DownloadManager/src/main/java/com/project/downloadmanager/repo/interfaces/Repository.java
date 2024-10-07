@@ -1,4 +1,4 @@
-package com.project.downloadmanager.repo;
+package com.project.downloadmanager.repo.interfaces;
 
 import java.sql.SQLException;
 import java.util.List;
