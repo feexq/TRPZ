@@ -7,7 +7,7 @@ public class DownloadStatistic {
 //    private float avgSpeed; // maybe!?
     private long downloadTotalTime;
 
-    private long userId;
+    private User userId;
 
     //............... maybe something else!!?
 
@@ -23,11 +23,11 @@ public class DownloadStatistic {
 
     }
 
-    public long getUserId() {
+    public User getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(User userId) {
         this.userId = userId;
     }
 

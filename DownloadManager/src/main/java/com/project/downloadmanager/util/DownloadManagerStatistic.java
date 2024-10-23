@@ -21,17 +21,21 @@ public class DownloadManagerStatistic {
     }
 
     public void calculateStatistics() throws SQLException{
-        List<Download> downloadList = downloadRepository.findAll();
-        downloadCount(downloadList);
-        downloadSizeCount(downloadList);
-        downloadTotalTime(downloadList);
+//        List<Download> downloadList = downloadRepository.findAll();
+//        downloadCount(downloadList);
+//        downloadSizeCount(downloadList);
+//        downloadTotalTime(downloadList);
+//
+//        // Save the statistics to the database
+//        try {
+//            statisticRepository.save(statistic);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+    }
 
-        // Save the statistics to the database
-        try {
-            statisticRepository.save(statistic);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public DownloadStatistic getStatistic(Long id) throws SQLException{
+        return statisticRepository.findByUserId(id).orElseThrow();
     }
 
     public void downloadCount(List<Download> downloadList) {

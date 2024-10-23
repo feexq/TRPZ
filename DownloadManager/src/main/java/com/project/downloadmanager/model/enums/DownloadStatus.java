@@ -1,4 +1,4 @@
-package com.project.downloadmanager.model;
+package com.project.downloadmanager.model.enums;
 
 public enum DownloadStatus {
     PENDING,
