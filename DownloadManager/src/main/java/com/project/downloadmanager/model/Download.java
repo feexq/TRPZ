@@ -53,12 +53,10 @@ public class Download implements Runnable{
             setSize((double) huc.getContentLengthLong());
             BufferedInputStream bis = new BufferedInputStream(huc.getInputStream());
 
-            // Отримуємо шлях до директорії завантаження з ConfigLoader
             String downloadDirectory = ConfigLoader.getDownloadDirectory();
             String fileName = new File(url.getPath()).getName();
             String filePath = downloadDirectory + File.separator + fileName;
 
-            // Створюємо папку, якщо вона не існує
             File directory = new File(downloadDirectory);
             if (!directory.exists()) {
                 directory.mkdirs();
@@ -72,7 +70,6 @@ public class Download implements Runnable{
             while ((read = bis.read(buffer, 0, buffer.length)) >= 0) {
                 bos.write(buffer, 0, read);
                 setDownloaded(getDownloaded() + read);
-                System.out.println("Downloaded " + getDownloaded() + " bytes");
             }
 
             bos.close();
