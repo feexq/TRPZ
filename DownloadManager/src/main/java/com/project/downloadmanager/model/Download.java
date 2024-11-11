@@ -1,19 +1,24 @@
 package com.project.downloadmanager.model;
 
+import com.project.downloadmanager.config.ConfigLoader;
 import com.project.downloadmanager.model.User;
 import com.project.downloadmanager.model.enums.DownloadStatus;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 
-public class Download {
-//    private final long id;
-//    private final String url;\
+public class Download implements Runnable{
 
     private long id;
     private String url;
 
-    private long size;
-    private long downloaded;
+    private double size;
+    private double downloaded;
 
     private DownloadStatus status;
 
@@ -21,17 +26,11 @@ public class Download {
     private Date endTime;
     private long elapsedTime;
     private long remainingTime;
-    private int speed;
-    private User userId;
+    private float speed;
+    private long userId;
 
 
-    public Download(long id, String url, User user) {
-        this.id = id;
-        this.url = url;
-        this.userId = user;
-    }
-
-    public Download(long id, String url, User user, long size ,
+    public Download(long id, String url, long user, double size ,
                     Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
@@ -42,22 +41,49 @@ public class Download {
         this.endTime = endTime;
     }
 
-//    public Download(long size , long downloaded ,
-//                    Date startTime , long elapsedTime , long remainingTime , float speed, DownloadStatus status,Date endTime) {
-//        this.size = size;
-//        this.downloaded = downloaded;
-//        this.startTime = startTime;
-//        this.elapsedTime = elapsedTime;
-//        this.remainingTime = remainingTime;
-//        this.speed = speed;
-//        this.status = status;
-//        this.endTime = endTime;
-//    }
-
-    public Download(Date startTime , Date endTime){
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public Download(String url){
+        this.url = url;
     }
+
+    @Override
+    public void run() {
+        try {
+            URL url = new URL(getUrl());
+            HttpURLConnection huc = (HttpURLConnection) url.openConnection();
+            setSize((double) huc.getContentLengthLong());
+            BufferedInputStream bis = new BufferedInputStream(huc.getInputStream());
+
+            // Отримуємо шлях до директорії завантаження з ConfigLoader
+            String downloadDirectory = ConfigLoader.getDownloadDirectory();
+            String fileName = new File(url.getPath()).getName();
+            String filePath = downloadDirectory + File.separator + fileName;
+
+            // Створюємо папку, якщо вона не існує
+            File directory = new File(downloadDirectory);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            FileOutputStream fos = new FileOutputStream(filePath);
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            byte[] buffer = new byte[1024];
+            int read;
+
+            while ((read = bis.read(buffer, 0, buffer.length)) >= 0) {
+                bos.write(buffer, 0, read);
+                setDownloaded(getDownloaded() + read);
+                System.out.println("Downloaded " + getDownloaded() + " bytes");
+            }
+
+            bos.close();
+            bis.close();
+            System.out.println("Download completed: " + filePath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public long getId() {
         return id;
@@ -75,19 +101,19 @@ public class Download {
         this.url = url;
     }
 
-    public long getSize() {
+    public double getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(double size) {
         this.size = size;
     }
 
-    public long getDownloaded() {
+    public double getDownloaded() {
         return downloaded;
     }
 
-    public void setDownloaded(long downloaded) {
+    public void setDownloaded(double downloaded) {
         this.downloaded = downloaded;
     }
 
@@ -124,11 +150,11 @@ public class Download {
         this.remainingTime = remainingTime;
     }
 
-    public int getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(float speed) {
         this.speed = speed;
     }
 
@@ -144,11 +170,16 @@ public class Download {
         this.endTime = date;
     }
 
-    public User getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(User user) {
+    public void setUserId(long user) {
         this.userId = user;
+    }
+
+    @Override
+    public String toString(){
+        return "Download id: " + id + " url: " + url + " size: " + size + " downloaded: ";
     }
 }
