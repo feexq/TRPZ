@@ -13,31 +13,6 @@ import java.util.Optional;
 public class DownloadErrorRepository implements Repository<DownloadError> {
 
 
-    public DownloadErrorRepository() {
-        initializeDatabase();
-    }
-
-    private void initializeDatabase() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-
-            String sql = """
-            CREATE TABLE IF NOT EXISTS download_errors (
-                id INT PRIMARY KEY AUTO_INCREMENT,
-                download_id INT NOT NULL,
-                error_message VARCHAR(255) NOT NULL,
-                error_type VARCHAR(50),
-                occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (download_id) REFERENCES downloads(id)
-            )
-            """;
-            stmt.execute(sql);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public DownloadError save(DownloadError entity) throws SQLException {
         return null;
@@ -63,13 +38,4 @@ public class DownloadErrorRepository implements Repository<DownloadError> {
 
     }
 
-    private DownloadError createDownloadErrorFromResultSet(ResultSet rs) throws SQLException {
-        long id = rs.getLong("id");
-        long download_id = rs.getLong("download_id");
-
-        String errorMessage = rs.getString("error_message");
-        String errorType = rs.getString("error_type");
-
-        return new DownloadError(id, new Download(1,"test",new User()),errorMessage,errorType);
-    }
 }

@@ -1,5 +1,6 @@
 package com.project.downloadmanager;
 
+import com.project.downloadmanager.util.DownloadManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +19,8 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
+        DownloadManager downloadManager = new DownloadManager();
+        downloadManager.downloadStart();
         launch();
     }
 }
