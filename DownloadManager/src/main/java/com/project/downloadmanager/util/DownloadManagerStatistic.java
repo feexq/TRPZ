@@ -2,7 +2,7 @@ package com.project.downloadmanager.util;
 
 import com.project.downloadmanager.repo.DownloadRepository;
 import com.project.downloadmanager.repo.DownloadStatisticRepository;
-import com.project.downloadmanager.model.Download;
+import com.project.downloadmanager.model.DownloadDto;
 import com.project.downloadmanager.model.DownloadStatistic;
 
 import java.sql.SQLException;
@@ -38,23 +38,23 @@ public class DownloadManagerStatistic {
         return statisticRepository.findByUserId(id).orElseThrow();
     }
 
-    public void downloadCount(List<Download> downloadList) {
+    public void downloadCount(List<DownloadDto> downloadList) {
         int downloads = downloadList.size();
         statistic.setDownloads(downloads);
     }
 
-    public void downloadSizeCount(List<Download> downloadList) {
+    public void downloadSizeCount(List<DownloadDto> downloadList) {
         long size = 0;
-        for (Download download : downloadList) {
+        for (DownloadDto download : downloadList) {
             size += download.getSize();
         }
         statistic.setDownloadsSize(size);
     }
 
-    public void downloadTotalTime(List<Download> downloadList) {
+    public void downloadTotalTime(List<DownloadDto> downloadList) {
         long totalTime = 0;
 
-        for (Download download : downloadList) {
+        for (DownloadDto download : downloadList) {
             if (download.getStartTime() != null && download.getEndTime() != null) {
                 long duration = download.getEndTime().getTime() - download.getStartTime().getTime();
                 totalTime += duration;
