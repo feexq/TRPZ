@@ -47,7 +47,7 @@ public class HelloApplication extends Application {
             Thread.sleep(500);
             commandInvoker.setCommand(deleteCommand);
             commandInvoker.executeCommand();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         launch();
