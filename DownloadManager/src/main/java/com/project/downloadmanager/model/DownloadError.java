@@ -1,21 +1,19 @@
 package com.project.downloadmanager.model;
 
-import java.util.Date;
-
 public class DownloadError {
     private long id;
-    private Download downloadId;
+    private DownloadDto downloadId;
     private String errorMessage;
     private String errorType;
 
-    public DownloadError(long id, Download downloadId, String errorMessage, String errorType) {
+    public DownloadError(long id, DownloadDto downloadId, String errorMessage, String errorType) {
         this.id = id;
         this.downloadId = downloadId;
         this.errorMessage = errorMessage;
         this.errorType = errorType;
     }
 
-    public DownloadError(Download downloadId, String errorMessage, String errorType) {
+    public DownloadError(DownloadDto downloadId, String errorMessage, String errorType) {
         this.downloadId = downloadId;
         this.errorMessage = errorMessage;
         this.errorType = errorType;
@@ -29,11 +27,11 @@ public class DownloadError {
         this.id = id;
     }
 
-    public Download getDownloadId() {
+    public DownloadDto getDownloadId() {
         return downloadId;
     }
 
-    public void setDownloadId(Download downloadId) {
+    public void setDownloadId(DownloadDto downloadId) {
         this.downloadId = downloadId;
     }
 

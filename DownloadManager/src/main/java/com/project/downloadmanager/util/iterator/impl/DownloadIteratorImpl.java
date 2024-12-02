@@ -1,18 +1,18 @@
 package com.project.downloadmanager.util.iterator.impl;
 
 
-import com.project.downloadmanager.model.Download;
+import com.project.downloadmanager.model.DownloadDto;
 import com.project.downloadmanager.util.iterator.Iterator;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class DownloadIteratorImpl implements Iterator<Download> {
+public class DownloadIteratorImpl implements Iterator<DownloadDto> {
 
     private int currentPosition = 0;
-    private final List<Download> downloads;
+    private final List<DownloadDto> downloads;
 
-    public DownloadIteratorImpl(List<Download> downloads) {
+    public DownloadIteratorImpl(List<DownloadDto> downloads) {
         this.downloads = downloads;
     }
 
@@ -22,7 +22,7 @@ public class DownloadIteratorImpl implements Iterator<Download> {
     }
 
     @Override
-    public Download next() {
+    public DownloadDto next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }

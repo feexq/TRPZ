@@ -1,8 +1,5 @@
 package com.project.downloadmanager;
 
-import com.project.downloadmanager.model.Download;
-import com.project.downloadmanager.model.DownloadStatistic;
-import com.project.downloadmanager.util.DownloadManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 

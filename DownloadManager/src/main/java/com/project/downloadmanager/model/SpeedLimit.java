@@ -1,16 +1,14 @@
 package com.project.downloadmanager.model;
 
-import java.security.Timestamp;
-
 public class SpeedLimit {
     private long id;
-    private Download downloadId;
+    private DownloadDto downloadId;
     private int speedLimitKbps;
     private boolean isActive;
 
     public SpeedLimit() {}
 
-    public SpeedLimit(long id, Download downloadId, int speedLimitKbps, boolean isActive) {
+    public SpeedLimit(long id, DownloadDto downloadId, int speedLimitKbps, boolean isActive) {
         this.id = id;
         this.downloadId = downloadId;
         this.speedLimitKbps = speedLimitKbps;
@@ -20,8 +18,8 @@ public class SpeedLimit {
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
-    public Download getDownloadId() { return downloadId; }
-    public void setDownloadId(Download downloadId) { this.downloadId = downloadId; }
+    public DownloadDto getDownloadId() { return downloadId; }
+    public void setDownloadId(DownloadDto downloadId) { this.downloadId = downloadId; }
 
     public int getSpeedLimitKbps() { return speedLimitKbps; }
     public void setSpeedLimitKbps(int speedLimitKbps) { this.speedLimitKbps = speedLimitKbps; }

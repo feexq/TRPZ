@@ -1,7 +1,10 @@
 package com.project.downloadmanager.util;
 
-import com.project.downloadmanager.model.Download;
+import com.project.downloadmanager.model.DownloadDto;
 import com.project.downloadmanager.model.enums.DownloadStatus;
+import com.project.downloadmanager.util.observer.impl.GUIObserver;
+import com.project.downloadmanager.util.observer.impl.LogObserver;
+import com.project.downloadmanager.util.observer.impl.StatisticObserver;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,11 +13,11 @@ import java.util.concurrent.Executors;
 
 public class DownloadManager {
 
-    private final Map<String, Download> downloads = new ConcurrentHashMap<>();
+    private final Map<String, DownloadDto> downloads = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     public void resume(String url) {
-        Download download = downloads.get(url);
+        DownloadDto download = downloads.get(url);
         if (download == null) {
             System.out.println("No download found for: " + url);
             return;
@@ -31,7 +34,7 @@ public class DownloadManager {
     }
 
     public void pause(String url) {
-        Download download = downloads.get(url);
+        DownloadDto download = downloads.get(url);
         if (download == null) {
             System.out.println("No download found for: " + url);
             return;
@@ -48,7 +51,7 @@ public class DownloadManager {
     }
 
     public void delete(String url) {
-        Download download = downloads.get(url);
+        DownloadDto download = downloads.get(url);
         if (download == null) {
             System.out.println("No download to cancel for: " + url);
             return;
@@ -66,7 +69,12 @@ public class DownloadManager {
         }
 
         System.out.println("Starting download: " + url);
-        Download download = new Download(url);
+        DownloadDto download = new DownloadDto(url);
+
+        download.attach(new LogObserver());
+        download.attach(new GUIObserver());
+        download.attach(new StatisticObserver());
+
         downloads.put(url, download);
         executorService.submit(download);
     }

@@ -1,10 +1,7 @@
 package com.project.downloadmanager.repo;
 
-import com.project.downloadmanager.model.Download;
 import com.project.downloadmanager.model.DownloadError;
-import com.project.downloadmanager.model.User;
 import com.project.downloadmanager.repo.interfaces.Repository;
-import com.project.downloadmanager.util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.List;

@@ -1,22 +1,26 @@
 package com.project.downloadmanager.model;
 
 import com.project.downloadmanager.config.ConfigLoader;
-import com.project.downloadmanager.model.User;
 import com.project.downloadmanager.model.enums.DownloadStatus;
+import com.project.downloadmanager.util.observer.Observer;
+import com.project.downloadmanager.util.observer.Subject;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Getter
 @Setter
-public class Download implements Runnable{
+public class DownloadDto implements Runnable, Subject {
 
+    private final List<Observer> observers = new ArrayList<>();
 
     private long id;
     private String url;
@@ -39,8 +43,8 @@ public class Download implements Runnable{
     private FileOutputStream fos;
     private HttpURLConnection huc;
 
-    public Download(long id, String url, long user, double size ,
-                    Date startTime , DownloadStatus status, Date endTime) {
+    public DownloadDto(long id, String url, long user, double size ,
+                       Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
         this.userId = user;
@@ -50,7 +54,7 @@ public class Download implements Runnable{
         this.endTime = endTime;
     }
 
-    public Download(String url){
+    public DownloadDto(String url){
         this.url = url;
     }
 
@@ -59,6 +63,7 @@ public class Download implements Runnable{
         try {
             setStatus(DownloadStatus.DOWNLOADING);
             setStartTime(new Date());
+            notifyObservers();
 
             URL urlObj = new URL(getUrl());
             String downloadDirectory = ConfigLoader.getDownloadDirectory();
@@ -93,12 +98,14 @@ public class Download implements Runnable{
             while ((read = bis.read(buffer, 0, buffer.length)) >= 0) {
                 if (status == DownloadStatus.CANCELLED) {
                     cleanup();
+                    notifyObservers();
                     return;
                 }
 
                 if (pause.get()) {
                     cleanup();
                     setStatus(DownloadStatus.PAUSED);
+                    notifyObservers();
                     return;
                 }
 
@@ -108,21 +115,17 @@ public class Download implements Runnable{
                 long elapsedMillis = System.currentTimeMillis() - startTimeMillis;
                 setSpeed((float) (getDownloaded() / (elapsedMillis / 1000.0)));
                 setRemainingTime((long) ((getSize() - getDownloaded()) / getSpeed()));
-
-                System.out.printf("Downloaded: %.2f%%, Speed: %.2f KB/s, Remaining: %d sec\n",
-                        (getDownloaded() / getSize()) * 100,
-                        getSpeed() / 1024,
-                        getRemainingTime());
+                notifyObservers();
             }
 
             cleanup();
             setEndTime(new Date());
             setStatus(DownloadStatus.COMPLETED);
-            System.out.println("Download completed: " + filePath);
+            notifyObservers();
 
         } catch (Exception e) {
             setStatus(DownloadStatus.ERROR);
-            System.err.println("Error during download: " + e.getMessage());
+            notifyObservers();
             e.printStackTrace();
         }
     }
@@ -149,5 +152,22 @@ public class Download implements Runnable{
     @Override
     public String toString(){
         return "Download id: " + id + " url: " + url + " size: " + size + " downloaded: ";
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer observer : observers) {
+            observer.update(this);
+        }
     }
 }
