@@ -5,13 +5,14 @@ import com.project.downloadmanager.model.enums.DownloadStatus;
 import com.project.downloadmanager.util.observer.impl.GUIObserver;
 import com.project.downloadmanager.util.observer.impl.LogObserver;
 import com.project.downloadmanager.util.observer.impl.StatisticObserver;
+import com.project.downloadmanager.util.template.AbstractDownloadManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class DownloadManager {
+public class DownloadManager extends AbstractDownloadManager {
 
     private final Map<String, DownloadDto> downloads = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newCachedThreadPool();
@@ -62,11 +63,7 @@ public class DownloadManager {
         downloads.remove(url);
     }
 
-    public void downloadStart(String url) {
-        if (downloads.containsKey(url)) {
-            System.out.println("Download already in progress or completed for: " + url);
-            return;
-        }
+    public DownloadDto downloadStart(String url) {
 
         System.out.println("Starting download: " + url);
         DownloadDto download = new DownloadDto(url);
@@ -77,6 +74,8 @@ public class DownloadManager {
 
         downloads.put(url, download);
         executorService.submit(download);
+
+        return download;
     }
 
 

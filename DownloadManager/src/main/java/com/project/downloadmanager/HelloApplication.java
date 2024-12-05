@@ -7,6 +7,7 @@ import com.project.downloadmanager.util.command.impl.DeleteDownloadCommand;
 import com.project.downloadmanager.util.command.impl.PauseDownloadCommand;
 import com.project.downloadmanager.util.command.impl.ResumeDownloadCommand;
 import com.project.downloadmanager.util.command.impl.StartDownloadCommand;
+import com.project.downloadmanager.util.template.AbstractDownloadManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -25,12 +26,13 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        DownloadManager dm = new DownloadManager();
+        AbstractDownloadManager dm = new DownloadManager();
+        DownloadManager dm2 = new DownloadManager();
 
         Command startCommand = new StartDownloadCommand(dm, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
-        Command pauseCommand = new PauseDownloadCommand(dm, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
-        Command resumeCommand = new ResumeDownloadCommand(dm, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
-        Command deleteCommand = new DeleteDownloadCommand(dm, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
+        Command pauseCommand = new PauseDownloadCommand(dm2, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
+        Command resumeCommand = new ResumeDownloadCommand(dm2, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
+        Command deleteCommand = new DeleteDownloadCommand(dm2, "https://sabnzbd.org/tests/internetspeed/50MB.bin");
 
         CommandInvoker commandInvoker = new CommandInvoker();
 
