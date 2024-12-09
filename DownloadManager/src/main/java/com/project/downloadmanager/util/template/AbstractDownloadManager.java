@@ -41,5 +41,4 @@ public abstract class AbstractDownloadManager {
 
     protected abstract DownloadDto downloadStart(String url);
 
-
 }

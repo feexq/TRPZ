@@ -7,9 +7,12 @@ import com.project.downloadmanager.util.observer.impl.GUIObserver;
 import java.io.*;
 import java.util.Collections;
 import java.util.HashMap;
+import com.project.downloadmanager.util.template.AbstractDownloadManager;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 
 public class DownloadManager implements Serializable{
     @Serial
@@ -124,6 +127,7 @@ public class DownloadManager implements Serializable{
     }
 
     public DownloadDto downloadStart(String url) {
+
         System.out.println("Starting download: " + url);
         DownloadDto download = new DownloadDto(url);
 

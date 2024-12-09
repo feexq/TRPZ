@@ -9,6 +9,7 @@ import com.project.downloadmanager.util.command.impl.DeleteDownloadCommand;
 import com.project.downloadmanager.util.command.impl.PauseDownloadCommand;
 import com.project.downloadmanager.util.command.impl.ResumeDownloadCommand;
 import com.project.downloadmanager.util.command.impl.StartDownloadCommand;
+import com.project.downloadmanager.util.template.AbstractDownloadManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
