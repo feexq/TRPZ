@@ -2,12 +2,14 @@ package com.project.downloadmanager.util;
 
 import com.project.downloadmanager.model.DownloadDto;
 import com.project.downloadmanager.model.enums.DownloadStatus;
+import com.project.downloadmanager.util.observer.Observer;
 import com.project.downloadmanager.util.observer.impl.GUIObserver;
-import com.project.downloadmanager.util.observer.impl.LogObserver;
-import com.project.downloadmanager.util.observer.impl.StatisticObserver;
+import java.io.*;
+import java.util.Collections;
+import java.util.HashMap;
+import com.project.downloadmanager.util.template.AbstractDownloadManager;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,6 +27,7 @@ public class DownloadManager implements Serializable{
     Observer observer = new GUIObserver();
 
     // Add readResolve method to handle executor service recreation
+  
 //    @Serial
 //    private Object readResolve() throws ObjectStreamException {
 //        executorService = Executors.newCachedThreadPool();
@@ -86,6 +89,7 @@ public class DownloadManager implements Serializable{
         System.out.println("Resuming download: " + url);
         download.resume();
         executorService.submit(download);
+        saveDownloads();
     }
 
     public void pause(String url) {
@@ -102,7 +106,7 @@ public class DownloadManager implements Serializable{
 
         System.out.println("Pausing download: " + url);
         download.pause();
-
+        saveDownloads();
     }
 
     public void delete(String url) {
@@ -115,30 +119,27 @@ public class DownloadManager implements Serializable{
         System.out.println("Cancelling download: " + url);
         download.setStatus(DownloadStatus.CANCELLED);
         downloads.remove(url);
+
+        File persistenceFile = new File(DOWNLOAD_PERSISTENCE_FILE);
+        if (persistenceFile.exists()) {
+            persistenceFile.delete();
+        }
     }
 
-    public void downloadStart(String url) {
-        if (downloads.containsKey(url)) {
-            System.out.println("Download already in progress or completed for: " + url);
-            return;
-        }
+    public DownloadDto downloadStart(String url) {
 
         System.out.println("Starting download: " + url);
         DownloadDto download = new DownloadDto(url);
 
-        download.attach(new LogObserver());
-        download.attach(new GUIObserver());
-        download.attach(new StatisticObserver());
+//        download.attach(new LogObserver());
+        download.attach(observer);
+//        download.attach(new StatisticObserver());
 
         downloads.put(url, download);
         executorService.submit(download);
+        saveDownloads();
+
 
         return download;
     }
-
-
-    //.............
-
-
-
 }

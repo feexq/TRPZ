@@ -8,10 +8,10 @@ public class StatisticObserver implements Observer {
 
     @Override
     public void update(DownloadDto dto) {
-        for (DownloadStatus status : DownloadStatus.values()) {
-            if (status == dto.getStatus()) {
-                System.out.println("STATISTICS -> " + status + " download: " + dto.getUrl());
-            }
-        }
+//        for (DownloadStatus status : DownloadStatus.values()) {
+//            if (status == dto.getStatus()) {
+//                System.out.println("STATISTICS -> " + status + " download: " + dto.getUrl());
+//            }
+//        }
     }
 }
