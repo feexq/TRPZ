@@ -8,9 +8,30 @@ public class GUIObserver implements Observer {
 
     @Override
     public void update(DownloadDto dto) {
-        System.out.printf("GUI -> Downloaded: %.2f%%, Speed: %.2f KB/s, Remaining: %d sec\n",
-                        (dto.getDownloaded() / dto.getSize()) * 100,
-                        dto.getSpeed() / 1024,
-                        dto.getRemainingTime());
+        activeDownload.remove(dto);
+        completeDownloads.remove(dto);
+        pausedDownloads.remove(dto);
+
+        switch (dto.getStatus()) {
+            case DOWNLOADING:
+                if(!activeDownload.existsDownload(dto)){
+                    activeDownload.add(dto);
+                }
+                break;
+            case PAUSED:
+                if(!pausedDownloads.existsDownload(dto)){
+                    pausedDownloads.add(dto);
+                }
+                break;
+            case COMPLETED:
+                if(!completeDownloads.existsDownload(dto)){
+                    completeDownloads.add(dto);
+                }
+                break;
+        }
+        System.out.println("=== Current Downloads ===");
+        activeDownload.display();
+        pausedDownloads.display();
+        completeDownloads.display();
     }
 }
