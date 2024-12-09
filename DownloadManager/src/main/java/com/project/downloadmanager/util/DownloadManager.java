@@ -89,7 +89,6 @@ public class DownloadManager implements Serializable{
         System.out.println("Resuming download: " + url);
         download.resume();
         executorService.submit(download);
-        saveDownloads();
     }
 
     public void pause(String url) {
@@ -106,7 +105,6 @@ public class DownloadManager implements Serializable{
 
         System.out.println("Pausing download: " + url);
         download.pause();
-        saveDownloads();
     }
 
     public void delete(String url) {
@@ -137,7 +135,6 @@ public class DownloadManager implements Serializable{
 
         downloads.put(url, download);
         executorService.submit(download);
-        saveDownloads();
 
 
         return download;

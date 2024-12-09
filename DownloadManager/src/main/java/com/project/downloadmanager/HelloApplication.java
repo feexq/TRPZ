@@ -82,40 +82,6 @@ public class HelloApplication extends Application {
 
     private static void startProgressMonitor(DownloadDto download) {
         Thread progressThread = new Thread(() -> {
-            while (true) {
-                if (download.getStatus() == DownloadStatus.COMPLETED || download.getStatus() == DownloadStatus.ERROR) {
-                    System.out.println("\nЗавантаження завершено для URL: " + download.getUrl());
-                    break;
-                }
-                System.out.print("\rПрогрес для " + download.getUrl() + ": " + getProgressBar(download) + " " +
-                        (int) ((download.getDownloaded() / download.getSize()) * 100) + "%");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        progressThread.start();
-    }
-
-    private static String getProgressBar(DownloadDto download) {
-        int totalBars = 30;
-        int completedBars = (int) ((download.getDownloaded() / download.getSize()) * totalBars);
-        StringBuilder progressBar = new StringBuilder("[");
-        for (int i = 0; i < totalBars; i++) {
-            if (i < completedBars) {
-                progressBar.append("=");
-            } else {
-                progressBar.append(" ");
-            }
-        }
-        progressBar.append("]");
-        return progressBar.toString();
-    }
-
-    private static void startProgressMonitor(DownloadDto download) {
-        Thread progressThread = new Thread(() -> {
             long lastDownloaded = 0;
             long lastTime = System.currentTimeMillis();
 
