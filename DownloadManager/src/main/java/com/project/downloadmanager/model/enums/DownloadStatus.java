@@ -1,6 +1,8 @@
 package com.project.downloadmanager.model.enums;
 
-public enum DownloadStatus {
+import java.io.Serializable;
+
+public enum DownloadStatus implements Serializable {
     PENDING,
     DOWNLOADING,
     PAUSED,

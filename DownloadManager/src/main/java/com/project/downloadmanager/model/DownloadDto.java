@@ -2,6 +2,7 @@ package com.project.downloadmanager.model;
 
 import com.project.downloadmanager.config.ConfigLoader;
 import com.project.downloadmanager.model.enums.DownloadStatus;
+import com.project.downloadmanager.util.composite.DownloadGroup;
 import com.project.downloadmanager.util.observer.Observer;
 import com.project.downloadmanager.util.observer.Subject;
 import lombok.Getter;
@@ -13,14 +14,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Getter
 @Setter
-public class DownloadDto implements Runnable, Subject {
+public class DownloadDto implements Runnable, Subject, Serializable, DownloadGroup {
 
     private final List<Observer> observers = new ArrayList<>();
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private long id;
     private String url;
@@ -63,7 +68,6 @@ public class DownloadDto implements Runnable, Subject {
         try {
             setStatus(DownloadStatus.DOWNLOADING);
             setStartTime(new Date());
-            notifyObservers();
 
             URL urlObj = new URL(getUrl());
             String downloadDirectory = ConfigLoader.getDownloadDirectory();
@@ -98,14 +102,12 @@ public class DownloadDto implements Runnable, Subject {
             while ((read = bis.read(buffer, 0, buffer.length)) >= 0) {
                 if (status == DownloadStatus.CANCELLED) {
                     cleanup();
-                    notifyObservers();
                     return;
                 }
 
                 if (pause.get()) {
-                    cleanup();
                     setStatus(DownloadStatus.PAUSED);
-                    notifyObservers();
+                    cleanup();
                     return;
                 }
 
@@ -115,17 +117,15 @@ public class DownloadDto implements Runnable, Subject {
                 long elapsedMillis = System.currentTimeMillis() - startTimeMillis;
                 setSpeed((float) (getDownloaded() / (elapsedMillis / 1000.0)));
                 setRemainingTime((long) ((getSize() - getDownloaded()) / getSpeed()));
-                notifyObservers();
             }
 
+            setStatus(DownloadStatus.COMPLETED);
             cleanup();
             setEndTime(new Date());
-            setStatus(DownloadStatus.COMPLETED);
-            notifyObservers();
+
 
         } catch (Exception e) {
             setStatus(DownloadStatus.ERROR);
-            notifyObservers();
             e.printStackTrace();
         }
     }
@@ -136,6 +136,7 @@ public class DownloadDto implements Runnable, Subject {
             if (bis != null) bis.close();
             if (fos != null) fos.close();
             if (huc != null) huc.disconnect();
+            notifyObservers();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -169,5 +170,16 @@ public class DownloadDto implements Runnable, Subject {
         for(Observer observer : observers) {
             observer.update(this);
         }
+    }
+
+    // In DownloadDto
+    public boolean isSerializable() {
+        // Check if download is in a state that can be safely serialized
+        return status == DownloadStatus.PAUSED;
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Download: " + url);
     }
 }

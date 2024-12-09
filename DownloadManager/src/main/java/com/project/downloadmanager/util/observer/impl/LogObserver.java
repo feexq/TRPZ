@@ -8,6 +8,6 @@ public class LogObserver implements Observer {
 
     @Override
     public void update(DownloadDto dto) {
-        System.out.println("LOG -> Download " + dto.getUrl() + " status: " + dto.getStatus());
+//        System.out.println("LOG -> Download " + dto.getUrl() + " status: " + dto.getStatus());
     }
 }

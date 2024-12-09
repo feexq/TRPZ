@@ -6,6 +6,7 @@ module com.project.downloadmanager {
     requires com.dlsc.formsfx;
     requires java.sql;
     requires static lombok;
+    requires jdk.compiler;
 
     opens com.project.downloadmanager to javafx.fxml;
     exports com.project.downloadmanager;
