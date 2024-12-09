@@ -22,4 +22,9 @@ public class ConfigLoader {
     public static String getDownloadDirectory() {
         return properties.getProperty("downloadDirectory");
     }
+
+    public static int getMaxDownloadSpeed() {
+        String speedProperty = properties.getProperty("maxDownloadSpeed", "0");
+        return Integer.parseInt(speedProperty);
+    }
 }
