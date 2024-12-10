@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class DownloadManager implements Serializable{
     @Serial
     private static final long serialVersionUID = 1L;
@@ -28,51 +27,52 @@ public class DownloadManager implements Serializable{
     Observer observer = new GUIObserver();
 
     // Add readResolve method to handle executor service recreation
-    @Serial
-    private Object readResolve() throws ObjectStreamException {
-        executorService = Executors.newCachedThreadPool();
-        return this;
-    }
-
-    public DownloadManager() {
-        loadDownloads();
-    }
-
-    private void saveDownloads() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DOWNLOAD_PERSISTENCE_FILE))) {
-            // Filter out non-serializable or incomplete downloads
-            Map<String, DownloadDto> serializableDownloads = new HashMap<>();
-            for (Map.Entry<String, DownloadDto> entry : downloads.entrySet()) {
-                if (entry.getValue().isSerializable()) {
-                    serializableDownloads.put(entry.getKey(), entry.getValue());
-                }
-            }
-            oos.writeObject(serializableDownloads);
-        } catch (IOException e) {
-            System.err.println("Serialization error: " + e.getMessage());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadDownloads() {
-        File persistenceFile = new File(DOWNLOAD_PERSISTENCE_FILE);
-        if (!persistenceFile.exists()) {
-            return;
-        }
-
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(persistenceFile))) {
-            Map<String, DownloadDto> savedDownloads = (Map<String, DownloadDto>) ois.readObject();
-
-            // Reinitialize paused downloads
-            for (DownloadDto download : savedDownloads.values()) {
-                if (download.getStatus() == DownloadStatus.PAUSED) {
-                    downloads.put(download.getUrl(), download);
-                }
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Failed to load downloads: " + e.getMessage());
-        }
-    }
+  
+//    @Serial
+//    private Object readResolve() throws ObjectStreamException {
+//        executorService = Executors.newCachedThreadPool();
+//        return this;
+//    }
+//
+//    public DownloadManager() {
+//        loadDownloads();
+//    }
+//
+//    private void saveDownloads() {
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DOWNLOAD_PERSISTENCE_FILE))) {
+//            // Filter out non-serializable or incomplete downloads
+//            Map<String, DownloadDto> serializableDownloads = new HashMap<>();
+//            for (Map.Entry<String, DownloadDto> entry : downloads.entrySet()) {
+//                if (entry.getValue().isSerializable()) {
+//                    serializableDownloads.put(entry.getKey(), entry.getValue());
+//                }
+//            }
+//            oos.writeObject(serializableDownloads);
+//        } catch (IOException e) {
+//            System.err.println("Serialization error: " + e.getMessage());
+//        }
+//    }
+//
+//    @SuppressWarnings("unchecked")
+//    private void loadDownloads() {
+//        File persistenceFile = new File(DOWNLOAD_PERSISTENCE_FILE);
+//        if (!persistenceFile.exists()) {
+//            return;
+//        }
+//
+//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(persistenceFile))) {
+//            Map<String, DownloadDto> savedDownloads = (Map<String, DownloadDto>) ois.readObject();
+//
+//            // Reinitialize paused downloads
+//            for (DownloadDto download : savedDownloads.values()) {
+//                if (download.getStatus() == DownloadStatus.PAUSED) {
+//                    downloads.put(download.getUrl(), download);
+//                }
+//            }
+//        } catch (IOException | ClassNotFoundException e) {
+//            System.err.println("Failed to load downloads: " + e.getMessage());
+//        }
+//    }
 
     public void resume(String url) {
         DownloadDto download = downloads.get(url);
@@ -89,7 +89,6 @@ public class DownloadManager implements Serializable{
         System.out.println("Resuming download: " + url);
         download.resume();
         executorService.submit(download);
-        saveDownloads();
     }
 
     public void pause(String url) {
@@ -106,7 +105,6 @@ public class DownloadManager implements Serializable{
 
         System.out.println("Pausing download: " + url);
         download.pause();
-        saveDownloads();
     }
 
     public void delete(String url) {
@@ -137,7 +135,7 @@ public class DownloadManager implements Serializable{
 
         downloads.put(url, download);
         executorService.submit(download);
-        saveDownloads();
+
 
         return download;
     }

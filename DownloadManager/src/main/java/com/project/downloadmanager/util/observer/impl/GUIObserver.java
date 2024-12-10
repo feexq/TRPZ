@@ -12,6 +12,10 @@ public class GUIObserver implements Observer {
 
     @Override
     public void update(DownloadDto dto) {
+        activeDownload.remove(dto);
+        completeDownloads.remove(dto);
+        pausedDownloads.remove(dto);
+
         switch (dto.getStatus()) {
             case DOWNLOADING:
                 if(!activeDownload.existsDownload(dto)){
