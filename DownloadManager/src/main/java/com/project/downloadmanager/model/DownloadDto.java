@@ -30,8 +30,10 @@ public class DownloadDto implements Runnable, Subject, Serializable, DownloadGro
     private long id;
     private String url;
 
-    private double size;
-    private double downloaded;
+    private long size;
+    private long downloaded;
+
+    private int maxSpeed = ConfigLoader.getMaxDownloadSpeed();
 
     private DownloadStatus status;
 
@@ -48,7 +50,7 @@ public class DownloadDto implements Runnable, Subject, Serializable, DownloadGro
     private FileOutputStream fos;
     private HttpURLConnection huc;
 
-    public DownloadDto(long id, String url, long user, double size ,
+    public DownloadDto(long id, String url, long user, long size ,
                        Date startTime , DownloadStatus status, Date endTime) {
         this.id = id;
         this.url = url;
@@ -82,14 +84,13 @@ public class DownloadDto implements Runnable, Subject, Serializable, DownloadGro
             // If download is starting fresh
             if (downloaded == 0) {
                 huc = (HttpURLConnection) urlObj.openConnection();
-                setSize((double) huc.getContentLengthLong());
+                setSize(huc.getContentLengthLong());
                 bis = new BufferedInputStream(huc.getInputStream());
                 fos = new FileOutputStream(filePath);
                 bos = new BufferedOutputStream(fos);
             } else {
-                // Resume download
                 huc = (HttpURLConnection) urlObj.openConnection();
-                huc.setRequestProperty("Range", "bytes=" + (long)downloaded + "-");
+                huc.setRequestProperty("Range", "bytes=" + downloaded + "-");
                 bis = new BufferedInputStream(huc.getInputStream());
                 fos = new FileOutputStream(filePath, true);  // append mode
                 bos = new BufferedOutputStream(fos);
@@ -98,6 +99,7 @@ public class DownloadDto implements Runnable, Subject, Serializable, DownloadGro
             byte[] buffer = new byte[1024];
             int read;
             long startTimeMillis = System.currentTimeMillis();
+            long bytesReadSinceLastCheck = 0;
 
             while ((read = bis.read(buffer, 0, buffer.length)) >= 0) {
                 if (status == DownloadStatus.CANCELLED) {
@@ -113,6 +115,21 @@ public class DownloadDto implements Runnable, Subject, Serializable, DownloadGro
 
                 bos.write(buffer, 0, read);
                 setDownloaded(getDownloaded() + read);
+                bytesReadSinceLastCheck += read;
+
+                if (maxSpeed > 0) {
+                    long elapsedMillis = System.currentTimeMillis() - startTimeMillis;
+                    if (elapsedMillis > 0) {
+                        long expectedBytesPerSecond = (bytesReadSinceLastCheck * 1000) / elapsedMillis;
+                        if (expectedBytesPerSecond > maxSpeed) {
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
+                }
 
                 long elapsedMillis = System.currentTimeMillis() - startTimeMillis;
                 setSpeed((float) (getDownloaded() / (elapsedMillis / 1000.0)));
